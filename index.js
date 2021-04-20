@@ -24,7 +24,7 @@ mongoose.connect('mongodb://localhost:27017/NewDB', {useNewUrlParser: true, useU
     .catch(err => console.log(err))
 
 
-
+//yo aakash
 //en la pág. index es donde nos saldrá la galería con todos los productos.//para que se nos muestre el DB, necesitamos el método .find (.then, .catch)
 app.get('/', (req, res) => {
     ProductItem.find()
