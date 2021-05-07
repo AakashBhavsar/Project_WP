@@ -16,7 +16,6 @@ const ProductItem = require('./models/productItem')
  // mongodb connection
 connectDB();
 
-//yo aakash
 //en la pág. index es donde nos saldrá la galería con todos los productos.//para que se nos muestre el DB, necesitamos el método .find (.then, .catch)
 app.get('/', (req, res) => {
     ProductItem.find()
