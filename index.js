@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-
 const connectDB = require('./database/connection');
 
 dotenv.config( { path : 'config.env'} )
@@ -12,10 +11,12 @@ app.set('view engine', 'ejs')
 
 //model:
 const ProductItem = require('./models/productItem')
+const Users = require('./models/login')
 
  // mongodb connection
 connectDB();
 
+var flag = 0;
 
 //en la pág. index es donde nos saldrá la galería con todos los productos.//para que se nos muestre el DB, necesitamos el método .find (.then, .catch)
 app.get('/', (req, res) => {
@@ -31,6 +32,33 @@ app.get('/', (req, res) => {
 //podríamos hacer un app.post en lugar de app.get, pej si tenemos un formulario
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.get("/login", (req, res) => {
+    res.render("login");
+})
+
+app.post("/login", async(req, res) => {
+    try{
+        const email = req.body.email;
+        const password = req.body.password;
+        console.log(`${email} and password is ${password}`);
+        const useremail = await Users.findOne({email:email});
+        //res.send(useremail);
+        if(useremail.password === password){
+            ProductItem.find()
+            .then(result => {
+                res.render('indexAdmin', {productData: result});
+            })
+            .catch(err => console.log(err))
+        }else{
+            res.send("Invalid user id or password");
+        }
+    }
+    catch(error){
+        console.log("Invalid");
+        res.status(400).send("invalid email");
+    }
+})
 
 app.get('/add', (req, res) => {
     ProductItem.find()
@@ -82,6 +110,18 @@ app.get('/details/:productId', (req, res) => {
   .catch(err => console.log(err))
 })
 
+//Admin
+app.get('/detailsAdmin/:productId', (req, res) => {
+    console.log('req.params.productId', req.params.productId);
+    // res.end()
+    ProductItem.findById(req.params.productId)
+  .then((result) => {
+    //   res.send(result)
+      res.render('detailsAdmin', {product: result})
+  })
+  .catch(err => console.log(err))
+})
+
 //Queremos editar los datos de un producto:
 app.post('/details/:id/edit', (req, res) => {
     console.log(req.body)
@@ -101,6 +141,26 @@ app.post('/details/:id/edit', (req, res) => {
     .catch(err => console.log(err))
 })
 
+//Admin
+app.post('/detailsAdmin/:id/edit', (req, res) => {
+    console.log(req.body)
+    // const updatedProduct = {
+    //     productName: req.body.productName, 
+    //     pictureLink: req.body.pictureLink, 
+    //     company: req.body.company,
+    //     price: req.body.price, 
+    //     description: req.body.description,
+    //     shopLink: req.body.shopLink
+    // }
+
+    ProductItem.findByIdAndUpdate(req.params.id,  req.body)
+    .then(result => {
+        res.redirect(`/detailsAdmin/${req.params.id}`)
+    })
+    .catch(err => console.log(err))
+})
+
+
 
 
 app.get('/deleted', (req, res) => {
@@ -109,6 +169,12 @@ app.get('/deleted', (req, res) => {
 
 //Eliminar un producto:(lo que esté detrás de ":", debe estar también detrás de "req.params....")
 app.get('/details/:productId/delete', (req, res) => {
+    ProductItem.findByIdAndDelete(req.params.productId)
+    .then(result => res.redirect('/deleted'))
+    .catch(err => console.log(err))
+})
+//Admin
+app.get('/detailsAdmin/:productId/delete', (req, res) => {
     ProductItem.findByIdAndDelete(req.params.productId)
     .then(result => res.redirect('/deleted'))
     .catch(err => console.log(err))
