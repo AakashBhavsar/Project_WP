@@ -1,20 +1,19 @@
-<%- include('./partials/head') %>
-<%- include('./partials/nav') %>
+<%- include('./partials/headA') %>
+<%- include('./partials/navAdmin') %>
 
 <section id="addSec" class="main">
     <h2 class="secTitle">Add a new product</h2>
     <hr id="line-short">
-
     <form action="/add" method="POST">
-        <input type="text" name="productName" id="productName" placeholder="Product-name">
-        <input type="text" name="pictureLink" placeholder="Url Picture">
-        <input type="text" name="company" placeholder="Company">
-        <input type="number" name="price" placeholder= "Price in $">
-        <textarea name="description" id="description" cols="30" rows="6" placeholder="Write your article here..."></textarea>
+        <input type="text" name="productName" id="productName" placeholder="Product-name" required>
+        <input type="text" name="pictureLink" placeholder="Url Picture" required>
+        <input type="text" name="company" placeholder="Company" required>
+        <input type="number" name="price" placeholder= "Price in $" required>
+        <textarea name="description" id="description" cols="30" rows="6" placeholder="Write your article here..." required></textarea>
 
         <input type="text" name="shopLink" placeholder="Link-shop">
 
-        <input type="submit" onclick="notifyMe(document.getElementById('productName').value)" value="Add Product">
+        <input type="submit" value="Add Product">
     </form>
 </section>
 
@@ -49,4 +48,4 @@
     </section>
 </section>
 
-<%- include('./partials/footer')%>
+<script src="/assets/js/main.js"></script>

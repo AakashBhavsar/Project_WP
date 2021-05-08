@@ -12,7 +12,7 @@ app.set('view engine', 'ejs')
 
 //model:
 const ProductItem = require('./models/productItem')
-const Admin = require('./models/login')
+// const Admin = require('./models/login')
 
 // mongodb connection
 connectDB();
@@ -42,14 +42,14 @@ app.use(passport.session());
 
 //create user model instance
 let userModel = require('./models/login');
-let User = userModel.User;
+let Admin = userModel.Admin;
 
 //Strategy 
-passport.use(User.createStrategy());
+passport.use(Admin.createStrategy());
 
-//serialize and deserialize User info
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+//serialize and deserialize Admin info
+passport.serializeUser(Admin.serializeUser());
+passport.deserializeUser(Admin.deserializeUser());
 
 app.get('/logout', requireAuth, (req, res, next) => {
     req.logOut();
@@ -66,6 +66,19 @@ app.get('/admin', requireAuth, (req, res, next) => {
     .catch(err => console.log(err))
     
 });
+
+app.get('/', requireAuth, (req, res, next) => {
+    ProductItem.find()
+    .then(result => {
+        const productData = result
+        const randomData = productData.sort(() => .5 - Math.random()).slice(0, 6)
+        
+        res.render('indexAdmin',{ productData, randomData })
+    })
+    .catch(err => console.log(err))
+    
+});
+
 app.get('/login', (req, res, next) => {
     if (!req.user) {
         res.render('login', {
@@ -98,22 +111,22 @@ app.post('/register', (req, res, next) => {
     //initate user object
     console.log('in process register...controller');
     console.log(req.body);
-    let newUser = User(
+    let newUser = Admin(
         {// password:req.body.password
             username:req.body.username,
             email: req.body.email   
         }
     );
-    User.register(newUser, req.body.password, (err) => {
+    Admin.register(newUser, req.body.password, (err) => {
 
         if (err) {
             console.log("error inserting user"+err.name);
             if (err.name == "UserExistsError") {
                 req.flash(
                     'registerMessage',
-                    'Registeration Error: User Already Exists!'
+                    'Registeration Error: Admin Already Exists!'
                 );
-                console.log('Error: User Already Exists! ');
+                console.log('Error: Admin Already Exists! ');
             }
             return res.render('register', {
                 messages: req.flash('registerMessage')
@@ -156,7 +169,7 @@ app.post('/login', (req, res, next) => {
 
 
 function requireAuth(req, res, next) {
-    //User is logged in?
+    //Admin is logged in?
     if (!req.isAuthenticated()) {
         return res.redirect('/login');
     }
@@ -230,13 +243,14 @@ app.post('/add', requireAuth, (req, res) => {
     newProductItem.save()
         .then(result => {
             // res.send(result)
-            res.redirect('/added')
+            res.redirect('/added/' + newProductItem.productName)
         })
         .catch(err => console.log(err))
 })
 
-app.get('/added', requireAuth, (req, res) => {
-    res.render('added')
+app.get('/added/?:productName', requireAuth, (req, res) => {
+    console.log(req.params);
+    res.render('added', {productName: req.params.productName })
 })
 //Queremos ver detalles de un producto concreto:
 app.get('/details/:productId', (req, res) => {
@@ -262,8 +276,8 @@ app.get('/detailsAdmin/:productId', (req, res) => {
   .catch(err => console.log(err))
 })
 
-//Queremos editar los datos de un producto:
-app.post('/details/:id/edit', requireAuth, (req, res) => {
+
+app.put('/details/:id/edit', requireAuth, (req, res) => {
     console.log(req.body)
     // const updatedProduct = {
     //     productName: req.body.productName, 
@@ -282,7 +296,7 @@ app.post('/details/:id/edit', requireAuth, (req, res) => {
 })
 
 //Admin
-app.post('/detailsAdmin/:id/edit', requireAuth, (req, res) => {
+app.put('/detailsAdmin/:id/edit', requireAuth, (req, res) => {
     console.log(req.body)
     // const updatedProduct = {
     //     productName: req.body.productName, 
@@ -307,14 +321,13 @@ app.get('/deleted', requireAuth, (req, res) => {
     res.render('deleted')
 })
 
-//Eliminar un producto:(lo que esté detrás de ":", debe estar también detrás de "req.params....")
-app.get('/details/:productId/delete', requireAuth, (req, res) => {
-    ProductItem.findByIdAndDelete(req.params.productId)
-        .then(result => res.redirect('/deleted'))
-        .catch(err => console.log(err))
-})
+// app.get('/details/:productId/delete', requireAuth, (req, res) => {
+//     ProductItem.findByIdAndDelete(req.params.productId)
+//         .then(result => res.redirect('/deleted'))
+//         .catch(err => console.log(err))
+// })
 //Admin
-app.get('/detailsAdmin/:productId/delete', requireAuth, (req, res) => {
+app.delete('/detailsAdmin/:productId/delete', requireAuth, (req, res) => {
     ProductItem.findByIdAndDelete(req.params.productId)
         .then(result => res.redirect('/deleted'))
         .catch(err => console.log(err))
