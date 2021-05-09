@@ -1,20 +1,23 @@
 <%- include('./partials/headA') %>
 <%- include('./partials/navAdmin') %>
-
-<section id="addSec" class="main">
-    <h2 class="secTitle">Add a new product</h2>
-    <hr id="line-short">
-    <form action="/add" method="POST">
-        <input type="text" name="productName" id="productName" placeholder="Product-name" required>
-        <input type="text" name="pictureLink" placeholder="Url Picture" required>
-        <input type="text" name="company" placeholder="Company" required>
-        <input type="number" name="price" placeholder= "Price in $" required>
-        <textarea name="description" id="description" cols="30" rows="6" placeholder="Write your article here..." required></textarea>
-
-        <input type="text" name="shopLink" placeholder="Link-shop">
-
-        <input type="submit" value="Add Product">
-    </form>
+<br>
+<br>
+<h2 class="secTitle">Add a new product</h2>
+    <hr id="line-long" style="align-self: center;">
+<section  class="main2">
+    
+    <article class="product-wrapperAdd" >
+        <form action="/add" method="POST" class="form-center">
+            <input class="form-text" type="text" name="productName" id="productName" placeholder="Product-name" required>
+            <input type="text" name="pictureLink" placeholder="Url Picture" required>
+            <input type="text" name="promo" placeholder="Promo Code" required>
+            <input type="number" name="price" placeholder= "Price in ₹" required>
+            <textarea name="description" id="description" cols="80" rows="5" placeholder="Write your article here..." required></textarea>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+            <input type="text" name="shopLink" placeholder="Link-shop">
+            <input type="submit" value="Add Product" height="22px">
+        </form>
+    </article>
 </section>
 
 <section id="eyes">
@@ -28,7 +31,7 @@
 </section>
 
 <section id="randomSec" class="main">
-    <h2 class="secTitle">Random products</h2>
+    <!-- <h2 class="secTitle">Random products</h2> -->
 
     <section class="random-products">
         <% randomData.forEach(product => { %>
@@ -39,9 +42,9 @@
                 <figcaption>
                     <a class="fig__link" href="/single/<%= product.id %>" target="_blank">
                         <%= product.productName %>
-                        <span class="company"><%=product.company %></span>
+                        <span class="promo"><%=product.promo %></span>
                     </a>
-                    <p class="price">$<%= product.price %></p>
+                    <p class="price">₹<%= product.price %></p>
                 </figcaption>
             </figure>
         <% }) %>

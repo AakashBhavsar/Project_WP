@@ -11,9 +11,9 @@
             <img class="details__img" src="<%= product.pictureLink %>"" alt="">
             <figcaption>
                 <h4 class="fig__link"><%= product.productName %>
-                <span class="company"><%= product.company %></span>
+                <span class="promo"><%= product.promo %></span>
                 </h4>
-                <p class="price">$<%= product.price %></p>
+                <p class="price">₹<%= product.price %></p>
             </figcaption>
         </figure>
 
@@ -25,7 +25,7 @@
     <form action="/details/<%=product.id%>/edit" method="POST" id="myForm" class="hide">
         <input type="text" name="productName" placeholder="Product-name" value="<%= product.productName %>">
         <input type="text" name="pictureLink" placeholder="Url Picture" value="<%= product.pictureLink %>">
-        <input type="text" name="company" placeholder="Company" value="<%= product.company %>">
+        <input type="text" name="promo" placeholder="Company" value="<%= product.promo %>">
         <input type="number" name="price" placeholder= "Price in $" value="<%= product.price %>">
         <textarea name="description" id="description" cols="30" rows="6" placeholder="Write your article here..."><%= product.description %></textarea>
 

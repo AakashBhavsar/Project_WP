@@ -1,5 +1,4 @@
 const toggleHide = () => {
-    // cuando hacemos click, se abre un nuevo formulario
     document.getElementById('myForm').classList.toggle('hide')
 }
 
@@ -32,6 +31,43 @@ const notifyMe = (pname) => {
         Notification.requestPermission();
       }
   }
-
+  
+  function edit() {
+    let productId = document.getElementById('productId').value;
+  
+    let productName = document.getElementById('productName').value;
+    let pictureLink = document.getElementById('pictureLink').value;
+    let promo = document.getElementById('promo').value;
+    let price = document.getElementById('price').value;
+    let description = document.getElementById('description').value;
+    let shopLink = document.getElementById('shopLink').value;
+    // Send PUT Request here
+    console.log("update button clicked");
+  
+    fetch('/edit/products/' + productId, {
+      method: 'put',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        productId: productId,
+        productName: productName,
+        pictureLink: pictureLink,
+        promo: promo,
+        price: price,
+        description: description,
+        shopLink: shopLink
+      })
+    });
+  }
+  function deleteProduct() {
+    let productId = document.getElementById('productId').value;
+    console.log("Delete button clicked");
+  
+    fetch('/delete/products/' + productId, {
+      method: 'delete',
+      headers: { 'Content-Type': 'application/json' }
+    }).then(
+      window.location.href='/deleted'
+    );
+  }
 
     
