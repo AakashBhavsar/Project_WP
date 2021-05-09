@@ -234,7 +234,7 @@ app.post('/add', requireAuth, (req, res) => {
     const newProductItem = new ProductItem({
         productName: req.body.productName,
         pictureLink: req.body.pictureLink,
-        company: req.body.company,
+        promo: req.body.promo,
         price: req.body.price,
         description: req.body.description,
         shopLink: req.body.shopLink
@@ -276,32 +276,14 @@ app.get('/detailsAdmin/:productId', (req, res) => {
   .catch(err => console.log(err))
 })
 
-
-app.put('/details/:id/edit', requireAuth, (req, res) => {
-    console.log(req.body)
-    // const updatedProduct = {
-    //     productName: req.body.productName, 
-    //     pictureLink: req.body.pictureLink, 
-    //     company: req.body.company,
-    //     price: req.body.price, 
-    //     description: req.body.description,
-    //     shopLink: req.body.shopLink
-    // }
-
-    ProductItem.findByIdAndUpdate(req.params.id, req.body)
-        .then(result => {
-            res.redirect(`/details/${req.params.id}`)
-        })
-        .catch(err => console.log(err))
-})
-
 //Admin
-app.put('/detailsAdmin/:id/edit', requireAuth, (req, res) => {
+app.put('/edit/products/?:id', requireAuth, (req, res) => {
+    console.log("put\n" + req.body)
     console.log(req.body)
     // const updatedProduct = {
     //     productName: req.body.productName, 
     //     pictureLink: req.body.pictureLink, 
-    //     company: req.body.company,
+    //     promo: req.body.promo,
     //     price: req.body.price, 
     //     description: req.body.description,
     //     shopLink: req.body.shopLink
@@ -317,9 +299,12 @@ app.put('/detailsAdmin/:id/edit', requireAuth, (req, res) => {
 
 
 
-app.get('/deleted', requireAuth, (req, res) => {
-    res.render('deleted')
-})
+// app.get('/deleted', requireAuth, (req, res) => {
+//     res.render('deleted')
+// })
+// app.delete('/deleted', requireAuth, (req, res) => {
+//     res.render('deleted')
+// })
 
 // app.get('/details/:productId/delete', requireAuth, (req, res) => {
 //     ProductItem.findByIdAndDelete(req.params.productId)
@@ -327,33 +312,19 @@ app.get('/deleted', requireAuth, (req, res) => {
 //         .catch(err => console.log(err))
 // })
 //Admin
-app.delete('/detailsAdmin/:productId/delete', requireAuth, (req, res) => {
+app.delete('/delete/products/:productId', requireAuth, (req, res) => {
+    console.log('delete');
     ProductItem.findByIdAndDelete(req.params.productId)
-        .then(result => res.redirect('/deleted'))
+        .then(result => {
+            console.log("Deleted Success")
+        })
         .catch(err => console.log(err))
 })
 
-
-//less than$30 Page
-app.get('/lessThan30', (req, res) => {
-    ProductItem.find({"price": { "$lt":"30" }})
-    // console.log("resultados:", resultados)
-    .then(result => {
-        console.log(result);
-        res.render('lessThan30', {cheapData: result})
-    })
-    .catch(err => console.log(err))
+app.get('/deleted', requireAuth, (req, res) => {
+    res.render('deleted')
 })
 
-//Weekly Recommendations
-app.get('/weekly', (req, res) => {
-    ProductItem.find()
-    .then(result => {
-        const weeklyData = result.sort(() => .5 - Math.random()).slice(0,3)
-    res.render('weekly', {weeklyData})
-    })
-    .catch(err => console.log(err))
-})
 
 
 app.use((req, res) => {
@@ -361,3 +332,17 @@ app.use((req, res) => {
 })
 
 app.listen(PORT, ()=> { console.log(`Server is running on http://localhost:${PORT}`)});
+
+// app.ready(function(){ 
+//     $(window).scrollTop(function(){ 
+//         if ($(this).scrollTop() > 100) { 
+//             $('#scroll').fadeIn(); 
+//         } else { 
+//             $('#scroll').fadeOut(); 
+//         } 
+//     }); 
+//     $('#scroll').click(function(){ 
+//         $("html, body").animate({ scrollTop: 0 }, 600); 
+//         return false; 
+//     }); 
+// });
